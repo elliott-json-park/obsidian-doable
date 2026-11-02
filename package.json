@@ -1,0 +1,37 @@
+{
+  "name": "doable",
+  "version": "1.0.0",
+  "description": "A calm agenda for the tasks already in your notes. Add tasks in plain words, see dates as readable chips, and keep the Tasks plugin format.",
+  "main": "main.js",
+  "scripts": {
+    "dev": "node esbuild.config.mjs",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+    "test": "npm run build && node scripts/test.mjs && node scripts/check-bundle.mjs",
+    "demo-vault": "node scripts/make-demo-vault.mjs"
+  },
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "tasks",
+    "todo",
+    "agenda",
+    "natural-language",
+    "recurring-tasks"
+  ],
+  "author": "Elliott Park",
+  "license": "MIT",
+  "devDependencies": {
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.13",
+    "@types/node": "^20.19.43",
+    "esbuild": "^0.28.2",
+    "obsidian": "^1.14.4",
+    "tslib": "^2.9.1",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "rrule": "^2.8.1"
+  },
+  "//": "No \"type\": \"module\" — Obsidian loads main.js as CommonJS. Build scripts use .mjs instead."
+}
