@@ -84,7 +84,9 @@ export class DoableSettingTab extends PluginSettingTab {
 
   async setControlValue(key: string, value: unknown): Promise<void> {
     await this.apply(key as Key, value);
-    if (key === 'target') this.update();
+    /* Redraw so the inbox field shows or hides. Only apps from 1.13 call this
+       method, and only they have update(); older ones redraw through display(). */
+    if (key === 'target') (this as unknown as { update?: () => void }).update?.();
   }
 
   /** The one place a setting changes, for both ways of drawing the tab. */

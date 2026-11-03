@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.2
+
+- The settings tab no longer calls a method that apps before 1.13 do not have.
+
 ## 1.0.1
 
 - Quick add now works on iPhones and iPads with iOS before 16.4. It used a pattern those versions cannot read.
