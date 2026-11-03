@@ -262,7 +262,7 @@
 
 .dbl-row.is-done .dbl-text,
 .dbl-row.is-cancelled .dbl-text,
-.dbl-row.is-completing .dbl-text { color: var(--text-faint); text-decoration: line-through; text-decoration-color: var(--text-faint); }
+.dbl-row.is-completing .dbl-text { color: var(--text-faint); text-decoration: line-through; }
 
 .dbl-row.is-completing { animation: dbl-leave 900ms ease forwards; }
 

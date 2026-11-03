@@ -1,6 +1,6 @@
 {
   "name": "doable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A calm agenda for the tasks already in your notes. Add tasks in plain words, see dates as readable chips, and keep the Tasks plugin format.",
   "main": "main.js",
   "scripts": {

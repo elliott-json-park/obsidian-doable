@@ -72,7 +72,12 @@ function weekdayName(i: number): string {
 export function weekStartIndex(setting: 'auto' | 'mon' | 'sun'): number {
   if (setting === 'mon') return 1;
   if (setting === 'sun') return 0;
-  try { return moment.localeData().firstDayOfWeek(); } catch { return 1; }
+  try {
+    const m = moment as unknown as { localeData(): { firstDayOfWeek(): number } };
+    return m.localeData().firstDayOfWeek();
+  } catch {
+    return 1;
+  }
 }
 
 export function upcomingDays(n: number, now: Day = today()): Day[] {

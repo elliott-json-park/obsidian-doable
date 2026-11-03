@@ -1,7 +1,7 @@
 {
   "id": "doable",
   "name": "Doable",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "minAppVersion": "1.8.7",
   "description": "A calm agenda for the tasks already in your notes. Add tasks in plain words, see dates as readable chips, and keep the Tasks plugin format.",
   "author": "Elliott Park",

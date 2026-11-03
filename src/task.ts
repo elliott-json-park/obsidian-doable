@@ -9,6 +9,7 @@
  */
 
 import { Day } from './dates';
+import { allMatches } from './re';
 
 export type Status = 'todo' | 'doing' | 'done' | 'cancelled';
 
@@ -157,7 +158,7 @@ export function fieldSpans(line: string): FieldSpan[] {
     FIELDS.forEach((f, i) => {
       const hit = rest.match(f.re);
       if (!hit || hit.index === undefined) return;
-      const lead = hit[0].length - hit[0].trimStart().length;
+      const lead = hit[0].length - hit[0].replace(/^\s+/, '').length;
       out.push({ kind: SPAN_KINDS[i], from: offset + hit.index + lead, to: offset + hit.index + hit[0].length, value: hit[1] });
       rest = rest.slice(0, hit.index);
       matched = true;
@@ -181,7 +182,7 @@ export function parseTask(line: string): TaskLine | null {
 
 export function tagsIn(text: string): string[] {
   const out: string[] = [];
-  for (const m of text.matchAll(TAG_RE)) out.push(m[2]);
+  for (const m of allMatches(TAG_RE, text)) out.push(m[2]);
   return out;
 }
 

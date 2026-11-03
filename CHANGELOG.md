@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+- Quick add now works on iPhones and iPads with iOS before 16.4. It used a pattern those versions cannot read.
+- Settings appear in Obsidian's settings search (1.13 and later).
+- Tidier code and styles, as asked by the community review. Nothing else changes.
+
 ## 1.0.0
 
 First release.

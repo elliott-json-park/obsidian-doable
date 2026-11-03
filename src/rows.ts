@@ -8,6 +8,7 @@ import { App, Menu, setIcon } from 'obsidian';
 import { diffDays, today } from './dates';
 import type { Item } from './index';
 import { t } from './i18n';
+import { allMatches } from './re';
 import { whenOf } from './task';
 import { dayLabel, repeatLabel } from './words';
 
@@ -27,11 +28,13 @@ export interface RowOptions {
 
 /** Draws inline Markdown in a description without running it as HTML. */
 export function renderText(el: HTMLElement, text: string, app: App, sourcePath: string): void {
-  const re = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]|\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|\*\*([^*]+)\*\*|__([^_]+)__|~~([^~]+)~~|==([^=]+)==|(?<![\w*])\*([^*\s][^*]*)\*(?!\w)|(^|\s)(#[^\s#'"`,;:!?()[\]{}<>]+)/gu;
+  /* The single-star group carries its own left edge (group 10), because
+     lookbehind does not run on older iOS. */
+  const re = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]|\[([^\]]+)\]\(([^)]+)\)|`([^`]+)`|\*\*([^*]+)\*\*|__([^_]+)__|~~([^~]+)~~|==([^=]+)==|(^|[^\w*])\*([^*\s][^*]*)\*(?!\w)|(^|\s)(#[^\s#'"`,;:!?()[\]{}<>]+)/gu;
   let at = 0;
-  for (const m of text.matchAll(re)) {
-    const i = m.index ?? 0;
-    const lead = m[11] ?? '';
+  for (const m of allMatches(re, text)) {
+    const i = m.index;
+    const lead = m[10] ?? m[12] ?? '';
     el.appendText(text.slice(at, i) + lead);
     at = i + m[0].length;
     if (m[1] !== undefined) {
@@ -47,8 +50,8 @@ export function renderText(el: HTMLElement, text: string, app: App, sourcePath: 
     else if (m[6] !== undefined || m[7] !== undefined) el.createEl('strong', { text: m[6] ?? m[7] });
     else if (m[8] !== undefined) el.createEl('del', { text: m[8] });
     else if (m[9] !== undefined) el.createEl('mark', { text: m[9] });
-    else if (m[10] !== undefined) el.createEl('em', { text: m[10] });
-    else if (m[12] !== undefined) el.createSpan({ cls: 'dbl-tag', text: m[12] });
+    else if (m[11] !== undefined) el.createEl('em', { text: m[11] });
+    else if (m[13] !== undefined) el.createSpan({ cls: 'dbl-tag', text: m[13] });
   }
   el.appendText(text.slice(at));
 }

@@ -30,6 +30,8 @@ const banned = [
   [/console\.log\s*\(/, 'console.log('],
 ];
 for (const [re, name] of banned) if (re.test(js)) fail.push(`main.js contains ${name}`);
+/* Lookbehind does not run on iOS before 16.4; the community review rejects it. */
+if (/\(\?<[=!]/.test(js)) fail.push('main.js contains a regex lookbehind');
 
 for (const [re, name] of [[/!important/, '!important'], [/:has\(/, ':has()']]) {
   if (re.test(css)) fail.push(`styles.css contains ${name}`);

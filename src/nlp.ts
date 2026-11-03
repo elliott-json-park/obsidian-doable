@@ -12,6 +12,7 @@ import {
 } from './dates';
 import { Priority } from './task';
 import { isValidRule } from './recur';
+import { allMatches } from './re';
 
 export type PartKind = 'date' | 'repeat' | 'priority';
 
@@ -36,8 +37,10 @@ export interface ParseOptions {
   weekStart: number;
 }
 
-/* Word edges that also refuse #tags, paths, possessives and hyphenated words. */
-const L = '(?<![\\p{L}\\p{N}_#/])';
+/* Word edges that also refuse #tags, paths, possessives and hyphenated words.
+   The left edge is checked in code (see edgeOk): lookbehind does not run on
+   older iOS. */
+const L = '';
 const R = "(?![\\p{L}\\p{N}_'’/-])";
 
 const EN_DAYS: Record<string, number> = {
@@ -279,12 +282,12 @@ const RULES: Rule[] = [
   /* ----------------------------------------------------------- priority */
   {
     kind: 'priority',
-    re: /(?<=^|\s)!(highest|high|medium|med|lowest|low|[1-5]|최고|높음|보통|낮음|최저|最高|高|中|低|最低)(?=\s|$)/giu,
+    re: /!(highest|high|medium|med|lowest|low|[1-5]|최고|높음|보통|낮음|최저|最高|高|中|低|最低)(?=\s|$)/giu,
     read: m => ({ priority: priorityWord(m[1].toLowerCase()) }),
   },
   {
     kind: 'priority',
-    re: /(?<=^|\s)(!!!|!!)(?=\s|$)/gu,
+    re: /(!!!|!!)(?=\s|$)/gu,
     read: m => ({ priority: m[1] === '!!!' ? 5 : 4 }),
   },
 ];
@@ -293,8 +296,18 @@ const RULES: Rule[] = [
    "내일까지" is a date, "내일로" and "매일경제" are not. */
 for (const rule of RULES) {
   if (/[가-힣]/.test(rule.re.source)) {
-    rule.re = new RegExp(`(?<![가-힣])(?:${rule.re.source})(?:까지|에|부터)?(?![가-힣])`, rule.re.flags);
+    rule.re = new RegExp(`(?:${rule.re.source})(?:까지|에|부터)?(?![가-힣])`, rule.re.flags);
   }
+}
+
+/** The character before a match must not glue it to the word in front. */
+function edgeOk(rule: Rule, before: string): boolean {
+  if (before === '') return true;
+  if (rule.kind === 'priority') return /\s/.test(before);
+  const src = rule.re.source;
+  if (/[가-힣]/.test(src)) return !/[가-힣]/.test(before);
+  if (/[\u4e00-\u9fff]/.test(src)) return true;
+  return !/[\p{L}\p{N}_#/]/u.test(before);
 }
 
 function dueOrNull(d: Day | null): { due: Day } | null {
@@ -338,10 +351,9 @@ function zhWeekday(o: ParseOptions, target: number, which?: string): Day {
 export function parseQuickAdd(input: string, o: ParseOptions): Parsed {
   const found: Array<Part & { value: ReturnType<Rule['read']> }> = [];
   for (const rule of RULES) {
-    rule.re.lastIndex = 0;
-    for (const m of input.matchAll(rule.re)) {
-      if (m.index === undefined) continue;
+    for (const m of allMatches(rule.re, input)) {
       const from = m.index, to = from + m[0].length;
+      if (!edgeOk(rule, input.slice(Math.max(0, from - 1), from))) continue;
       if (found.some(f => from < f.to && to > f.from)) continue;
       /* One date, one repeat and one priority: the first of each wins. */
       if (found.some(f => f.kind === rule.kind)) continue;

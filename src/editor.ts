@@ -19,6 +19,7 @@ import { addDays, Day, nextWeekday, startOfWeek, today, weekday } from './dates'
 import { t } from './i18n';
 import type DoablePlugin from './main';
 import { parseQuickAdd } from './nlp';
+import { allMatches } from './re';
 import { editLine, FieldSpan, fieldSpans, parseTask, Priority, TaskFields } from './task';
 import { dayLabel, repeatLabel } from './words';
 
@@ -159,13 +160,12 @@ export function readingChips(el: HTMLElement, _ctx: MarkdownPostProcessorContext
     const finished = li.classList.contains('is-checked');
     for (const node of nodes) {
       const text = node.data;
-      READ_RE.lastIndex = 0;
-      if (!READ_RE.test(text)) continue;
-      READ_RE.lastIndex = 0;
-      const frag = document.createDocumentFragment();
+      const hits = allMatches(READ_RE, text);
+      if (hits.length === 0) continue;
+      const frag = createFragment();
       let at = 0;
-      for (const m of text.matchAll(READ_RE)) {
-        const i = m.index ?? 0;
+      for (const m of hits) {
+        const i = m.index;
         /* A field in the middle of a sentence is part of the sentence. */
         if (!TAIL.test(text.slice(i + m[0].length))) continue;
         frag.append(text.slice(at, i));

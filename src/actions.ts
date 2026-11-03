@@ -153,7 +153,7 @@ export class Actions {
     const daily = internal?.getPluginById('daily-notes');
     if (!daily?.enabled) return null;
     const o = daily.instance?.options ?? {};
-    const name = moment().format(o.format || 'YYYY-MM-DD');
+    const name = formatToday(o.format || 'YYYY-MM-DD');
     const folder = (o.folder ?? '').replace(/^\/+|\/+$/g, '');
     return { path: normalizePath(`${folder ? folder + '/' : ''}${name}.md`), template: o.template ? normalizePath(o.template.endsWith('.md') ? o.template : `${o.template}.md`) : null };
   }
@@ -204,13 +204,22 @@ export class Actions {
 
   /** Moves a task's day, keeping the other dates where they are. */
   async reschedule(item: Item, field: 'due' | 'scheduled' | 'start', day: Day | null): Promise<Outcome> {
-    return this.setFields(item, { [field]: day } as Partial<TaskFields>);
+    const change: Partial<TaskFields> = {};
+    change[field] = day;
+    return this.setFields(item, change);
   }
 
   async postpone(item: Item, days: number): Promise<Outcome> {
     const d = item.due ?? item.scheduled ?? today();
     return this.reschedule(item, item.due ? 'due' : item.scheduled ? 'scheduled' : 'due', addDays(d < today() ? today() : d, days));
   }
+}
+
+/* The daily note's name, in the user's own moment format. Typed here because
+   the moment types are not always present where the code is checked. */
+function formatToday(format: string): string {
+  const m = moment as unknown as () => { format(f: string): string };
+  return m().format(format);
 }
 
 export function describeError(reason: 'changed' | 'missing'): string {
