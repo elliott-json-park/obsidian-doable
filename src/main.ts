@@ -1,4 +1,4 @@
-import { Editor, MarkdownView, Notice, Plugin, setIcon, TFile, WorkspaceLeaf } from 'obsidian';
+import { Editor, getLanguage, MarkdownView, Notice, Plugin, setIcon, TFile, WorkspaceLeaf } from 'obsidian';
 import { EditorView } from '@codemirror/view';
 import { Actions, describeError, Outcome } from './actions';
 import { QueryBlock } from './block';
@@ -11,6 +11,7 @@ import { RowHost, rowMenu } from './rows';
 import { DEFAULTS, DoableSettingTab, Settings } from './settings';
 import { editLine, FieldSpan, parseTask, Priority, whenField, whenOf } from './task';
 import { AgendaView, VIEW_TYPE } from './view';
+import { askWhenPicked, maybeAskForStar, starChanged, starOnLoad } from './star';
 import { dayLabel, repeatLabel, weekStartIndex } from './words';
 
 const TASKS_ID = 'obsidian-tasks-plugin';
@@ -23,11 +24,17 @@ export default class DoablePlugin extends Plugin {
   private toastTimer: number | null = null;
 
   async onload(): Promise<void> {
-    this.settings = { ...DEFAULTS, ...(await this.loadData() as Partial<Settings> | null) };
+    const saved = await this.loadData() as Partial<Settings> | null;
+    this.settings = { ...DEFAULTS, ...saved };
+    const star = starOnLoad(saved?.starAsk, !!saved, this.manifest.version);
+    const starMoved = starChanged(saved?.starAsk, star);
+    this.settings.starAsk = star;
+    if (starMoved) await this.saveSettings();
     this.index = new TaskIndex(this.app, () => this.settings);
     this.actions = new Actions(this.app, () => this.settings);
 
     this.registerView(VIEW_TYPE, leaf => new AgendaView(leaf, this));
+    askWhenPicked(this, leaf => leaf.view.getViewType() === VIEW_TYPE, () => this.askForStar());
     this.addRibbonIcon('circle-check-big', t('name'), () => { void this.openAgenda(); });
     this.addSettingTab(new DoableSettingTab(this.app, this));
 
@@ -84,6 +91,19 @@ export default class DoablePlugin extends Plugin {
 
   async saveSettings(): Promise<void> {
     await this.saveData(this.settings);
+  }
+
+  /** Show the one-time star request if an update armed it (star.ts). Called when the agenda opens. */
+  askForStar(): void {
+    let language = 'en';
+    try { language = getLanguage(); } catch { /* older app: English */ }
+    maybeAskForStar(this.app, {
+      state: this.settings.starAsk,
+      name: this.manifest.name,
+      url: 'https://github.com/elliott-json-park/obsidian-doable',
+      language,
+      save: next => { this.settings.starAsk = next; return this.saveSettings(); },
+    });
   }
 
   tasksPluginActive(): boolean {

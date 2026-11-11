@@ -105,6 +105,10 @@ Doable is a list, not a project manager. There are no boards, Gantt charts, time
 - Completion date, creation date, where the next repeat goes.
 - Chips on or off, first day of the week, how many days are listed one by one.
 
+## One-time message
+
+After you update Doable, the first time you open the Doable view yourself, a small window asks you to star this repository on GitHub if you find the plugin useful. It appears **once**, only for people who updated (never on a fresh install), never at start-up, and never again after that. Its button opens the repository in your browser only when you press it, and nothing in the plugin depends on it. There are no other messages or ads.
+
 ## Install
 
 Open **Settings → Community plugins → Browse**, search for **Doable**, install and enable it.

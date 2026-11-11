@@ -1,6 +1,7 @@
 import { App, normalizePath, PluginSettingTab, Setting, SettingDefinitionItem } from 'obsidian';
 import { t } from './i18n';
 import type DoablePlugin from './main';
+import type { StarState } from './star';
 
 export interface Settings {
   target: 'inbox' | 'daily';
@@ -17,6 +18,8 @@ export interface Settings {
   /** Sections the reader folded away. */
   folded: string[];
   importedFromTasks: boolean;
+  /** The one-time star request after an update (star.ts). */
+  starAsk?: StarState;
 }
 
 export const DEFAULTS: Settings = {

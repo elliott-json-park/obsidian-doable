@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0
+
+- A one-time request to star the repository. After an update, the first time you open the Doable view yourself, a small window asks for a GitHub star. It shows once, only to people who updated, never at start-up. See "One-time message" in the README.
+
 ## 1.0.2
 
 - The settings tab no longer calls a method that apps before 1.13 do not have.

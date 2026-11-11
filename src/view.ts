@@ -66,6 +66,7 @@ export class AgendaView extends ItemView {
     const root = this.contentEl;
     root.empty();
     root.addClass('dbl-view');
+    this.plugin.askForStar();
 
     const top = root.createDiv({ cls: 'dbl-top' });
     const titles = top.createDiv({ cls: 'dbl-titles' });
