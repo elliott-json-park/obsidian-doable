@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.1
+
+- The agenda and query blocks follow Settings → Appearance → Font size. At the default size nothing changes; a smaller or larger font now makes Doable's text smaller or larger with it (#1).
+
 ## 1.1.0
 
 - A one-time request to star the repository. After an update, the first time you open the Doable view yourself, a small window asks for a GitHub star. It shows once, only to people who updated, never at start-up. See "One-time message" in the README.

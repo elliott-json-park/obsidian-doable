@@ -7,7 +7,7 @@
  */
 import esbuild from 'esbuild';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createRequire } from 'node:module';
@@ -331,6 +331,22 @@ test('ordinary words are not read as dates or repeats', () => {
   assert.equal(p('회의 내일에').due, '2026-11-03');
   assert.equal(p('Standup daily').recurrence, 'every day');
   assert.equal(p('Pay by 11/30').due, '2026-11-30');
+});
+
+/* ----------------------------------------------------------------- styles */
+
+test('agenda and query blocks follow the font size setting (#1)', () => {
+  const css = readFileSync('styles.css', 'utf8');
+  assert.match(css, /--dbl-fs:\s*calc\(var\(--font-text-size, 16px\) - 1px\)/);
+  // Everything drawn inside the agenda or a query block uses the --dbl-fs sizes,
+  // not the fixed interface sizes that ignore Settings → Appearance → Font size.
+  for (const sel of ['.dbl-sub', '.dbl-view .dbl-add-input', '.dbl-preview', '.dbl-section-head', '.dbl-section-empty', '.dbl-text',
+    '.dbl-meta', '.dbl-when', '.dbl-view .dbl-more', '.dbl-empty-body', '.dbl-block-group', '.dbl-block-none', '.dbl-block-foot']) {
+    const i = css.indexOf('\n' + sel + ' {');
+    assert.ok(i >= 0, sel);
+    const rule = css.slice(i, css.indexOf('}', i));
+    assert.match(rule, /font-size: var\(--dbl-fs(-small|-smaller)?\)/, sel);
+  }
 });
 
 /* ---------------------------------------------------------------- strings */

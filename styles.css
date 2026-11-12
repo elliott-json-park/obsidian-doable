@@ -10,6 +10,11 @@
   --dbl-p3: var(--color-yellow);
   --dbl-p1: var(--color-blue);
   --dbl-p0: var(--color-cyan);
+  /* Text follows Settings → Appearance → Font size. At the default 16px these
+     come out as 15, 13 and 12px, the sizes Doable has always used. */
+  --dbl-fs: calc(var(--font-text-size, 16px) - 1px);
+  --dbl-fs-small: calc(var(--dbl-fs) - 2px);
+  --dbl-fs-smaller: calc(var(--dbl-fs) - 3px);
 }
 
 .dbl-view {
@@ -38,7 +43,7 @@
 
 .dbl-sub {
   margin-top: 2px;
-  font-size: var(--font-ui-small);
+  font-size: var(--dbl-fs-small);
   color: var(--text-muted);
 }
 
@@ -77,7 +82,7 @@
   border: none;
   background: none;
   box-shadow: none;
-  font-size: var(--font-ui-medium);
+  font-size: var(--dbl-fs);
 }
 
 .dbl-view .dbl-add-input:focus { box-shadow: none; }
@@ -88,7 +93,7 @@
   align-items: center;
   gap: 6px;
   margin-top: -4px;
-  font-size: var(--font-ui-smaller);
+  font-size: var(--dbl-fs-smaller);
   color: var(--text-muted);
 }
 
@@ -128,7 +133,7 @@
   padding: 0 6px;
   margin: 0 -6px;
   border-radius: 6px;
-  font-size: var(--font-ui-small);
+  font-size: var(--dbl-fs-small);
   font-weight: 600;
   color: var(--text-muted);
   user-select: none;
@@ -155,7 +160,7 @@
 
 .dbl-section-empty {
   padding: 4px 0 2px 30px;
-  font-size: var(--font-ui-small);
+  font-size: var(--dbl-fs-small);
   color: var(--text-faint);
 }
 
@@ -250,7 +255,7 @@
 .dbl-body { flex: 1 1 auto; min-width: 0; }
 
 .dbl-text {
-  font-size: var(--font-ui-medium);
+  font-size: var(--dbl-fs);
   line-height: 1.4;
   overflow-wrap: anywhere;
   transition: color 300ms ease;
@@ -271,7 +276,7 @@
   flex-wrap: wrap;
   gap: 2px 10px;
   margin-top: 1px;
-  font-size: var(--font-ui-smaller);
+  font-size: var(--dbl-fs-smaller);
   color: var(--text-faint);
 }
 
@@ -291,7 +296,7 @@
   background: none;
   box-shadow: none;
   color: var(--text-muted);
-  font-size: var(--font-ui-smaller);
+  font-size: var(--dbl-fs-smaller);
   white-space: nowrap;
   cursor: pointer;
 }
@@ -325,7 +330,7 @@
   background: none;
   box-shadow: none;
   color: var(--text-muted);
-  font-size: var(--font-ui-small);
+  font-size: var(--dbl-fs-small);
   cursor: pointer;
 }
 
@@ -342,7 +347,7 @@
 .dbl-empty-icon { display: flex; justify-content: center; color: var(--text-faint); margin-bottom: 10px; }
 .dbl-empty-icon svg { width: 32px; height: 32px; stroke-width: 1.5; }
 .dbl-empty-title { font-weight: 600; color: var(--text-normal); }
-.dbl-empty-body { margin-top: 4px; font-size: var(--font-ui-small); line-height: 1.5; }
+.dbl-empty-body { margin-top: 4px; font-size: var(--dbl-fs-small); line-height: 1.5; }
 
 /* Query blocks */
 
@@ -356,7 +361,7 @@
 
 .dbl-block-group {
   margin: 10px 0 2px;
-  font-size: var(--font-ui-small);
+  font-size: var(--dbl-fs-small);
   font-weight: 600;
   color: var(--text-muted);
 }
@@ -364,14 +369,14 @@
 .dbl-block-group.is-depth-1 { margin-left: 10px; font-weight: 500; }
 .dbl-block-group.is-depth-2 { margin-left: 20px; font-weight: 500; }
 
-.dbl-block-none { padding: 8px 0; color: var(--text-faint); font-size: var(--font-ui-small); }
+.dbl-block-none { padding: 8px 0; color: var(--text-faint); font-size: var(--dbl-fs-small); }
 
 .dbl-block-foot {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 12px;
   margin-top: 6px;
-  font-size: var(--font-ui-smaller);
+  font-size: var(--dbl-fs-smaller);
   color: var(--text-faint);
 }
 
