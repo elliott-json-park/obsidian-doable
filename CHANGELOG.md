@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.2
+
+- A redesigned star request. The window that asks for a GitHub star now has a glowing star, one clear button and a quieter "Maybe later", in your theme's own accent color. People who saw the first, plainer window see the new one once more after this update; anyone who presses the star button is never asked again. See "One-time message" in the README.
+
 ## 1.1.1
 
 - The agenda and query blocks follow Settings → Appearance → Font size. At the default size nothing changes; a smaller or larger font now makes Doable's text smaller or larger with it (#1).
